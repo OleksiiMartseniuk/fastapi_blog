@@ -11,8 +11,8 @@ import sys
 sys.path = ['', '..'] + sys.path[1:]
 
 
-from db.base import Base
-from config.settings import SQLALCHEMY_DATABASE_URL
+from fastapi_blog.db.base import Base
+from fastapi_blog.config.settings import SQLALCHEMY_DATABASE_URL
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
