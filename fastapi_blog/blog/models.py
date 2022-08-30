@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
-from db.database import Base
+from fastapi_blog.db.database import Base
 
 
 class Post(Base):
@@ -18,4 +18,4 @@ class Post(Base):
     status = Column(String, nullable=False)
     owner_id = Column(Integer, ForeignKey('users.id'))
 
-    owner = relationship("User", back_populates="posts")
+    owner = relationship('User', back_populates='posts')
