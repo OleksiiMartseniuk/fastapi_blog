@@ -1,0 +1,64 @@
+from typing import TypeVar, Generic
+
+from fastapi import HTTPException
+
+from sqlalchemy.ext.declarative import DeclarativeMeta as Model
+from sqlalchemy.orm import Session
+from pydantic import BaseModel
+
+
+ModelType = TypeVar('ModelType', bound=Model)
+CreateSchemaType = TypeVar('CreateSchemaType', bound=BaseModel)
+UpdateSchemaType = TypeVar('UpdateSchemaType', bound=BaseModel)
+
+
+class CRUD(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
+
+    def __init__(self, model: ModelType) -> None:
+        self.model = model
+
+    def get(self, db: Session, id: int) -> ModelType:
+        db_model: ModelType = db.query(self.model).get(id)
+        if not db_model:
+            raise HTTPException(status_code=404, detail="Item not found")
+        return db_model
+
+    def create(
+        self, db: Session, item: CreateSchemaType, **kwargs
+    ) -> ModelType:
+        db_model = self.model(**item.dict(), **kwargs)
+        db.add(db_model)
+        db.commit()
+        db.refresh(db_model)
+        return db_model
+
+    def update(
+        self, db: Session, id: int, item: UpdateSchemaType
+    ) -> ModelType:
+        db_model = self.get(db, id)
+
+        for key, value in item.dict(exclude_unset=True).items():
+            if hasattr(db_model, key):
+                setattr(db_model, key, value)
+
+        db.commit()
+        db.refresh(db_model)
+        return db_model
+
+    def delete(self, db: Session, id: int) -> ModelType:
+        db_model = self.get(db, id)
+        db.delete(db_model)
+        db.commit()
+        return db_model
+
+    def all(
+        self, db: Session, skip: int = 0, limit: int = 100
+    ) -> list[ModelType]:
+        db_models: list[ModelType] = (
+            db.query(self.model).
+            order_by('id').
+            offset(skip).
+            limit(limit).
+            all()
+        )
+        return db_models
