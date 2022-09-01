@@ -18,3 +18,4 @@ class User(Base):
     is_admin = Column(Boolean, default=False, nullable=False)
 
     posts = relationship('Post', back_populates='owner')
+    comments = relationship('Comment', back_populates='owner')
