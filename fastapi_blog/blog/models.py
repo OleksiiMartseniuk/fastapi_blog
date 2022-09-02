@@ -5,12 +5,21 @@ from sqlalchemy import (
     Text,
     DateTime,
     ForeignKey,
-    Boolean
+    Boolean,
+    Table
 )
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 
 from fastapi_blog.db.database import Base
+
+
+post_tag_table = Table(
+    'post_tag',
+    Base.metadata,
+    Column("post_id", ForeignKey("posts.id"), primary_key=True),
+    Column("tag_id", ForeignKey("tags.id"), primary_key=True),
+)
 
 
 class Post(Base):
@@ -28,6 +37,9 @@ class Post(Base):
 
     owner = relationship('User', back_populates='posts')
     comments = relationship('Comment', back_populates='post')
+    tags = relationship(
+        'Tag', secondary=post_tag_table, back_populates='posts'
+    )
 
 
 class Comment(Base):
@@ -43,3 +55,15 @@ class Comment(Base):
 
     owner = relationship('User', back_populates='comments')
     post = relationship('Post', back_populates='comments')
+
+
+class Tag(Base):
+    __tablename__ = 'tags'
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, nullable=False)
+    created = Column(DateTime(timezone=True), server_default=func.now())
+
+    posts = relationship(
+        'Post', secondary=post_tag_table, back_populates='tags'
+    )
