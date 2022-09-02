@@ -24,3 +24,10 @@ class UserCreate(BaseModel):
 class UserUpdate(BaseModel):
     username: str = None
     email: str = None
+
+
+class UserName(BaseModel):
+    username: str
+
+    class Config:
+        orm_mode = True
