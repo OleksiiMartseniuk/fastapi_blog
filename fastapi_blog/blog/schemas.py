@@ -10,7 +10,7 @@ class Post(BaseModel):
     title: str
     body: str
     created: datetime
-    updated: datetime
+    updated: datetime | None
     status: str
     owner: UserName
     comments: list[int] = []
@@ -20,17 +20,14 @@ class Post(BaseModel):
         orm_mode = True
 
 
-class PostBase(BaseModel):
+class CreatePost(BaseModel):
     title: str
     body: str
 
 
-class CreatePost(PostBase):
-    pass
-
-
-class UpdatePost(PostBase):
-    pass
+class UpdatePost(BaseModel):
+    title: str = None
+    body: str = None
 
 
 class PostResponse(BaseModel):
