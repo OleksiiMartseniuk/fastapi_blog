@@ -44,3 +44,13 @@ def update_post(
     user: User = Depends(get_current_active_user)
 ):
     return service_post.update(db, id, post, owner_id=user.id)
+
+
+@post_router.delete('/', response_model=schemas.Info)
+def delete_post(
+    id: int,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_active_user)
+):
+    service_post.delete(db, id, owner_id=user.id)
+    return {'message': 'post remove'}
