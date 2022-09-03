@@ -41,3 +41,7 @@ class PostResponse(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class Info(BaseModel):
+    message: str
