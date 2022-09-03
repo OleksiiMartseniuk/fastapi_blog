@@ -20,8 +20,12 @@ class CRUD(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def _not_exist(self):
         raise HTTPException(status_code=404, detail="Object not found")
 
-    def get(self, db: Session, id: int) -> ModelType:
-        db_model: ModelType = db.query(self.model).get(id)
+    def get(self, db: Session, id: int, **kwargs) -> ModelType:
+        db_model: ModelType = (
+            db.query(self.model).
+            filter_by(id=id, **kwargs).
+            first()
+        )
         if not db_model:
             self._not_exist()
         return db_model
@@ -36,9 +40,9 @@ class CRUD(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         return db_model
 
     def update(
-        self, db: Session, id: int, item: UpdateSchemaType
+        self, db: Session, id: int, item: UpdateSchemaType, **kwargs
     ) -> ModelType:
-        db_model = self.get(db, id)
+        db_model = self.get(db, id, **kwargs)
 
         for key, value in item.dict(exclude_unset=True).items():
             if hasattr(db_model, key):
@@ -48,8 +52,8 @@ class CRUD(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         db.refresh(db_model)
         return db_model
 
-    def delete(self, db: Session, id: int) -> ModelType:
-        db_model = self.get(db, id)
+    def delete(self, db: Session, id: int, **kwargs) -> ModelType:
+        db_model = self.get(db, id, **kwargs)
         db.delete(db_model)
         db.commit()
         return db_model
