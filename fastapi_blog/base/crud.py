@@ -17,10 +17,13 @@ class CRUD(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
     def __init__(self, model: ModelType) -> None:
         self.model = model
 
+    def _not_exist(self):
+        raise HTTPException(status_code=404, detail="Object not found")
+
     def get(self, db: Session, id: int) -> ModelType:
         db_model: ModelType = db.query(self.model).get(id)
         if not db_model:
-            raise HTTPException(status_code=404, detail="Item not found")
+            self._not_exist()
         return db_model
 
     def create(
