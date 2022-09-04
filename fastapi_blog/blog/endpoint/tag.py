@@ -26,7 +26,7 @@ def create_tag(
     return service_tag.create(db, tag)
 
 
-@tag_router.put('/')
+@tag_router.put('/{id}/')
 def update_tag(
     id: int,
     tag: schemas.UpdateTag,
@@ -36,10 +36,16 @@ def update_tag(
     return service_tag.update(db, id, tag)
 
 
-@tag_router.delete('/')
+@tag_router.delete('/{id}/', response_model=schemas.Info)
 def delete_tag(
     id: int,
     db: Session = Depends(get_db),
     user: User = Depends(get_current_admin_user)
 ):
-    return service_tag.delete(db, id)
+    service_tag.delete(db, id)
+    return {'massage': 'tag remove'}
+
+
+@tag_router.get('/all/', response_model=list[schemas.Tag])
+def all_tag(db: Session = Depends(get_db)):
+    return service_tag.all(db)
