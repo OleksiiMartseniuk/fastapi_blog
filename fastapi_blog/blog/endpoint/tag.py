@@ -51,7 +51,7 @@ def all_tag(db: Session = Depends(get_db)):
     return service_tag.all(db)
 
 
-@tag_router.post('/add/')
+@tag_router.post('/add/', response_model=schemas.Info)
 def add_tag_post(
     tag_id: int,
     post_id: int,
