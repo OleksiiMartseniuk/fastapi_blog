@@ -31,7 +31,7 @@ def get_post(
     return service_post.get(db, id)
 
 
-@post_router.get('/all/', response_model=list[schemas.PostResponse])
+@post_router.get('/', response_model=list[schemas.PostResponse])
 def all_post(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return service_post.all(db, skip, limit)
 
