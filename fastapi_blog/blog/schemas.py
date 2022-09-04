@@ -12,6 +12,14 @@ class CommentId(BaseModel):
         orm_mode = True
 
 
+class TagTitle(BaseModel):
+    id: int
+    title: str
+
+    class Config:
+        orm_mode = True
+
+
 class Post(BaseModel):
     id: int
     title: str
@@ -20,8 +28,8 @@ class Post(BaseModel):
     updated: datetime | None
     status: str
     owner: UserName
-    comments: list[CommentId]
-    tags: list[int] = []
+    comments: list[CommentId] = []
+    tags: list[TagTitle] = []
 
     class Config:
         orm_mode = True
