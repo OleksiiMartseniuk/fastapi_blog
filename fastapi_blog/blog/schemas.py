@@ -80,3 +80,20 @@ class CreateComment(BaseModel):
 
 class UpdateComment(BaseModel):
     body: str
+
+
+class Tag(BaseModel):
+    id: int
+    title: str
+    created: datetime
+
+    class Config:
+        orm_mode = True
+
+
+class CreateTag(BaseModel):
+    title: str
+
+
+class UpdateTag(BaseModel):
+    title: str
