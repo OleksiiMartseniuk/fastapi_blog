@@ -49,3 +49,14 @@ def delete_tag(
 @tag_router.get('/all/', response_model=list[schemas.Tag])
 def all_tag(db: Session = Depends(get_db)):
     return service_tag.all(db)
+
+
+@tag_router.post('/add/')
+def add_tag_post(
+    tag_id: int,
+    post_id: int,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_active_user)
+):
+    service_tag.add_tag(db, tag_id, post_id, user.id)
+    return {'message': 'tag add'}
