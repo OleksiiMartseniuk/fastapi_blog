@@ -23,7 +23,7 @@ def create_post(
     return service_post.create(db, post, owner_id=user.id, status='publish')
 
 
-@post_router.get('/', response_model=schemas.Post)
+@post_router.get('/{id}/', response_model=schemas.Post)
 def get_post(
     id: int,
     db: Session = Depends(get_db)
@@ -36,7 +36,7 @@ def all_post(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return service_post.all(db, skip, limit)
 
 
-@post_router.put('/', response_model=schemas.UpdatePost)
+@post_router.put('/{id}/', response_model=schemas.UpdatePost)
 def update_post(
     id: int,
     post: schemas.UpdatePost,
@@ -46,7 +46,7 @@ def update_post(
     return service_post.update(db, id, post, owner_id=user.id)
 
 
-@post_router.delete('/', response_model=schemas.Info)
+@post_router.delete('/{id}/', response_model=schemas.Info)
 def delete_post(
     id: int,
     db: Session = Depends(get_db),
